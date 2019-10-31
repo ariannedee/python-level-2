@@ -3,7 +3,7 @@ A program that takes a letter and outputs a text file of
 all of the countries that start with that letter
 """
 
-# Todo: Read countries.txt and save all countries
+# Todo: Read data/countries.txt and save all countries
 
 # Get user to provide a letter
 letter = input('Number of countries that start with letter: ')
