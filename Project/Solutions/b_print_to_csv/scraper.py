@@ -4,7 +4,13 @@ import requests
 from bs4 import BeautifulSoup
 
 URL = "https://en.wikipedia.org/wiki/Member_states_of_the_United_Nations"
-headers = {'User-Agent': 'Arianne Dee (ariannedee@gmail.com)'}
+
+# Todo: Update with your info
+name = None
+email = None
+assert name and email
+
+headers = {'User-Agent': f'{name} ({email})'}
 html_doc = requests.get(URL, headers=headers).text
 soup = BeautifulSoup(html_doc, 'html.parser')
 

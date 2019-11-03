@@ -2,11 +2,17 @@ import requests
 from bs4 import BeautifulSoup
 
 URL = "https://en.wikipedia.org/wiki/Member_states_of_the_United_Nations"
-headers = {'User-Agent': 'Arianne Dee (ariannedee@gmail.com)'}
+
+# Update with your info
+name = None
+email = None
+assert name and email
+
+headers = {'User-Agent': f'{name} ({email})'}
 html_doc = requests.get(URL, headers=headers).text
 
 # Uncomment following lines if you have no internet or if the Wikipedia page has changed
-# with open('../un_countries_full.html', 'r') as file:
+# with open('../../UN_countries_full.html', 'r') as file:
 #     html_doc = ''
 #     for line in file:
 #         html_doc += line
