@@ -1,5 +1,5 @@
 """
-Return a list of factorials from 0! to n! given a user's input of n
+Given a user's input of n, return a list of factorials from 0! to n!
 
 E.g. 4! = 1 x 2 x 3 x 4 = 24
 and 0! = 1
