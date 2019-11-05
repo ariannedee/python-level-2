@@ -11,7 +11,7 @@ follow the instructions here instead: [add Python to the PATH variable](docs/WIN
 3. Keep the default settings and click *Next*
  <img width="60%" src="installer_2.png">
 
-4. Check the *Install for all users* box
+4. Check the *Install for all users* box if you want Python accessible by all users.
 5. Customize the install location: **C:\Python37** or whatever version number you're installing
 6. Click *Install*
  <img width="60%" src="installer_3.png">
