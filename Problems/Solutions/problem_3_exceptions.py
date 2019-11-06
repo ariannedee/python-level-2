@@ -1,5 +1,5 @@
 """
-Handle invalid inputs
+Given a temperature (in Celsius), print the state of water at that temperature
 """
 
 while True:

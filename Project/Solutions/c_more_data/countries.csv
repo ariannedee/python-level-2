@@ -1,11 +1,11 @@
-Name,Population,Area (km2)
-Afghanistan,"32,225,560","652,230"
-Albania,"2,876,591","28,748"
-Algeria,"42,200,000 ","2,381,741"
-Andorra,"76,177",467.63
-Angola,"25,789,024","1,246,700"
-Antigua and Barbuda,"100,963",440
-Argentina,"44,938,712","2,780,400"
-Armenia,"2,924,816","29,743"
-Australia,"25,506,900","7,692,024"
-Austria,"8,857,960","83,879"
+Name,Date Joined,Population,Area (km2)
+Afghanistan,19 November 1946,"32,225,560","652,230"
+Albania,14 December 1955,"2,876,591","28,748"
+Algeria,8 October 1962,"42,200,000 ","2,381,741"
+Andorra,28 July 1993,"76,177",467.63
+Angola,1 December 1976,"25,789,024","1,246,700"
+Antigua and Barbuda,11 November 1981,"100,963",440
+Argentina,24 October 1945,"44,938,712","2,780,400"
+Armenia,2 March 1992,"2,924,816","29,743"
+Australia,1 November 1945,"25,512,100","7,692,024"
+Austria,14 December 1955,"8,857,960","83,879"

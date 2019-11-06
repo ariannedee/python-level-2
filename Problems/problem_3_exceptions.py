@@ -1,5 +1,5 @@
 """
-Given a temperature (in Celsius)
+Given a temperature (in Celsius), print the state of water at that temperature
 """
 
 # Todo: Handle invalid inputs

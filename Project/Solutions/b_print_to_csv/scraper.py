@@ -24,11 +24,11 @@ for row in table.find_all('tr'):
         country_name = country_name.split('[')[0]
         country_data = {
             'Name': country_name,
-            'Date': columns[2].text.strip()
+            'Date Joined': columns[2].text.strip()
         }
         countries.append(country_data)
 
 with open('countries.csv', 'w') as output:
-    writer = csv.DictWriter(output, ['Name', 'Date'])
+    writer = csv.DictWriter(output, ['Name', 'Date Joined'])
     writer.writeheader()
     writer.writerows(countries)

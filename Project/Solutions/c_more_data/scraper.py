@@ -18,20 +18,21 @@ soup = BeautifulSoup(html_doc, 'html.parser')
 
 table = soup.find('table', attrs={'class': 'wikitable'})
 
-country_links = {}
+countries = []
 for row in table.find_all('tr'):
     columns = row.find_all('td')
     if len(columns) > 0:
-        country_data = columns[1]
-
-        # Clean name
-        country_name = country_data.text.strip()
+        country_name = columns[1].text.strip()
         country_name = country_name.split('[')[0]
+        date_joined = columns[2].text.strip()
+        url = BASE_URL + columns[1].find('a').get('href')
 
-        # Get link to country page
-        country_links[country_name] = BASE_URL + country_data.find('a').get('href')
-
-print(country_links)
+        country_data = {
+            'Name': country_name,
+            'Date Joined': date_joined,
+            'URL': url
+        }
+        countries.append(country_data)
 
 
 def get_population(table):
@@ -46,24 +47,21 @@ def get_area(table):
     return text.split('\xa0')[0].split('[')[0]
 
 
-country_data = []
-
-for country in country_links:
-    url = country_links[country]
+for country in countries[:10]:
+    url = country['URL']
     html_doc = requests.get(url, headers=headers).text
     soup = BeautifulSoup(html_doc, 'html.parser')
     table = soup.find('table', attrs={'class': 'geography'})
-    country_dict = {
-        'Name': country,
+    more_data = {
         'Population': get_population(table),
         'Area (km2)': get_area(table)
     }
-    country_data.append(country_dict)
-    time.sleep(0.1)
+    country.update(more_data)
+    print(country)
+    time.sleep(0.5)
 
-print(country_data)
 
 with open('countries.csv', 'w') as output:
-    writer = csv.DictWriter(output, ['Name', 'Population', 'Area (km2)'])
+    writer = csv.DictWriter(output, ['Name', 'Date Joined', 'Population', 'Area (km2)'], extrasaction='ignore')
     writer.writeheader()
-    writer.writerows(country_data)
+    writer.writerows(countries[:10])
