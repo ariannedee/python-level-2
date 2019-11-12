@@ -6,7 +6,7 @@ when you try running it.
 
 To add Python to your PATH variable:
 1. Find the path of **python.exe** on your system.
-[Look in these directories](docs/PATH_LOCATIONS.md) or search for it.
+[Look in these directories](PATH_LOCATIONS.md) or search for it.
 
 1. Open *System Properties* and click on the *Advanced* tab
 

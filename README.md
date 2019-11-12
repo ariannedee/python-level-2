@@ -57,7 +57,7 @@ Install, open, and use the default settings.
 
 ### 4. Download the course files
 If you're viewing this on GitHub already, stay on this page.
-Otherwise, go to the GitHub repository: https://github.com/ariannedee/intro-to-python
+Otherwise, go to the GitHub repository: https://github.com/ariannedee/python-level-2
 
 #### If you know git:
 Clone the repository.
