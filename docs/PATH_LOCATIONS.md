@@ -31,4 +31,4 @@ try searching google more specifically based on
 your Python version, operating system, and method of download.
 
 If you found it at another location, please email me at
-**ariannedee@gmail.com** so I can update this list.
+**arianne.dee.studios@gmail.com** so I can update this list.

@@ -96,3 +96,7 @@ Once in Settings:
 1. If it's not there, click the **...** button and navigate to your Python location
    - To find where Python is located, [look in these directories](docs/PATH_LOCATIONS.md)
    - You may have to search the internet for where Python gets installed by default on your operating system
+
+### Do you offer private Python help?
+I can! Email **arianne.dee.studios at gmail.com** if you have any questions
+or would like to set up some remote training.
