@@ -2,8 +2,8 @@ import requests
 from bs4 import BeautifulSoup
 
 LOGIN_URL = "https://github.com/session"
-PASSWORD = "***"
 USERNAME = "***"
+PASSWORD = "***"
 
 URL = "https://github.com"
 headers = {'User-Agent': f'Your name (your@email.com)'}
