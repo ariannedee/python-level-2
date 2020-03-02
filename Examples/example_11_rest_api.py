@@ -14,7 +14,6 @@ headers = {
     'Accept': 'application/vnd.github.v3+json',
     'Content-Type': 'application/json',
     'Authorization': 'token {Your token here}',  # See https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line
-    # 'Authorization': 'token 90e7da5d3982a097e489c25f30abfb1fbe300ec1',  # See https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line
 }
 
 # Make API request
