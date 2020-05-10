@@ -18,7 +18,7 @@ Belgium
 Belize
 Benin
 Bhutan
-Plurinational State of Bolivia
+Bolivarian Republic of Venezuela
 Bosnia and Herzegovina
 Botswana
 Brazil
@@ -61,7 +61,6 @@ Fiji
 Finland
 France
 Gabon
-Republic of The Gambia
 Georgia
 Germany
 Ghana
@@ -77,9 +76,9 @@ Hungary
 Iceland
 India
 Indonesia
-Islamic Republic of Iran
 Iraq
 Ireland
+Islamic Republic of Iran
 Israel
 Italy
 Jamaica
@@ -134,11 +133,13 @@ Papua New Guinea
 Paraguay
 Peru
 Philippines
+Plurinational State of Bolivia
 Poland
 Portugal
 Qatar
 Republic of Korea
 Republic of Moldova
+Republic of The Gambia
 Romania
 Russian Federation
 Rwanda
@@ -186,8 +187,7 @@ United States of America
 Uruguay
 Uzbekistan
 Vanuatu
-Bolivarian Republic of Venezuela
-Vietnam
+Viet Nam
 Yemen
 Zambia
 Zimbabwe

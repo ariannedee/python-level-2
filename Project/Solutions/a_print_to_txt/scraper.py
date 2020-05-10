@@ -3,13 +3,16 @@ from bs4 import BeautifulSoup
 
 URL = "https://en.wikipedia.org/wiki/Member_states_of_the_United_Nations"
 
-# Update with your info
-name = None
-email = None
+# Todo: Update with your info
+name = 'Arianne Dee'
+email = 'ariannedee@gmail.com'
 assert name and email
 
 headers = {'User-Agent': f'{name} ({email})'}
-html_doc = requests.get(URL, headers=headers).text
+response = requests.get(URL, headers=headers)
+assert response.status_code == 200
+
+html_doc = response.text
 
 # Uncomment following lines if you have no internet or if the Wikipedia page has changed
 # with open('../../UN_countries_full.html', 'r') as file:
@@ -19,18 +22,23 @@ html_doc = requests.get(URL, headers=headers).text
 
 soup = BeautifulSoup(html_doc, 'html.parser')
 
+with open('../UN_countries_full.html', 'w') as file:
+    file.write(soup.prettify())
+
 table = soup.find('table', attrs={'class': 'wikitable'})
+assert table.caption.string
 
-countries = []
-for row in table.find_all('tr'):
-    columns = row.find_all('td')
-    if len(columns) > 0:
-        country_name = columns[1].text.strip()
-        country_name = country_name.split('[')[0]
-        countries.append(country_name)
+rows = table.tbody.find_all('tr')
 
-print(countries)
+country_list = []
+for row in rows:
+    country_name_th = row.find('th', attrs={'scope': 'row'})
+    if country_name_th:
+        country_name = country_name_th.a.string.strip()
+        country_list.append(country_name)
 
-with open('countries.txt', 'w') as output:
-    for country in countries:
-        output.write(country + '\n')
+assert len(country_list) > 100
+
+with open('countries.txt', 'w') as file:
+    for country in country_list:
+        file.write(country + '\n')

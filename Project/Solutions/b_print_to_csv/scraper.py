@@ -11,24 +11,42 @@ email = None
 assert name and email
 
 headers = {'User-Agent': f'{name} ({email})'}
-html_doc = requests.get(URL, headers=headers).text
+response = requests.get(URL, headers=headers)
+assert response.status_code == 200
+
+html_doc = response.text
+
+# Uncomment following lines if you have no internet or if the Wikipedia page has changed
+# with open('../../UN_countries_full.html', 'r') as file:
+#     html_doc = ''
+#     for line in file:
+#         html_doc += line
+
 soup = BeautifulSoup(html_doc, 'html.parser')
 
 table = soup.find('table', attrs={'class': 'wikitable'})
+assert table.caption.string
 
-countries = []
-for row in table.find_all('tr'):
-    columns = row.find_all('td')
-    if len(columns) > 0:
-        country_name = columns[1].text.strip()
-        country_name = country_name.split('[')[0]
+rows = table.tbody.find_all('tr')
+
+country_list = []
+for row in rows:
+    country_name_th = row.find('th', attrs={'scope': 'row'})
+    if country_name_th:
+        country_name = country_name_th.a.string.strip()
+
+        date_joined_td = row.find_all('td')[1]
+        date_joined = date_joined_td.span.string.strip()
+
         country_data = {
             'Name': country_name,
-            'Date Joined': columns[2].text.strip()
+            'Date Joined': date_joined
         }
-        countries.append(country_data)
+        country_list.append(country_data)
 
-with open('countries.csv', 'w') as output:
-    writer = csv.DictWriter(output, ['Name', 'Date Joined'])
+assert len(country_list) > 100
+
+with open('countries.csv', 'w') as file:
+    writer = csv.DictWriter(file, ('Name', 'Date Joined'))
     writer.writeheader()
-    writer.writerows(countries)
+    writer.writerows(country_list)
