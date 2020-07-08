@@ -5,9 +5,10 @@ This is the code for the *Safari Live Training* - **Programming with Python: Bey
 
 Before the class, please follow these instructions:
 1. [Install Python](#1-install-python-36-or-higher)
-2. [Install PyCharm](#2-download-pycharm-community-edition)
+2. [Choose an IDE](#2-choose-an-ide)
 3. [Download the code](#3-download-the-course-files)
-4. [Check that Python was installed properly](#4-make-sure-that-python-is-properly-installed)
+4. [Setup before class](#4-setup-before-class)
+5. [At the start of class](#5-at-the-start-of-class)
 
 ## Set up instructions
 ### 1. Install Python 3.6 or higher
@@ -29,7 +30,7 @@ Follow the instructions here: [Windows Python installer instructions](docs/WININ
 ##### If you've already installed Python with the default settings
 Follow the instructions here: [Add Python to PATH variable in Windows](docs/WINSETPATH.md)
 
-### 2. Make sure that Python is properly installed
+#### Make sure that Python is properly installed
 1. Open the *Command Prompt* application in Windows
 or *Terminal* on Mac or Linux
 
@@ -37,25 +38,32 @@ or *Terminal* on Mac or Linux
 
 1. Type `python3 --version` and press enter
 
-1. One or both of those commands should print 
+1. Type `py --version` and press enter
+
+1. One of those commands should print 
 a Python version of 3.6 or higher 
 (whichever version you just downloaded).
  If it doesn't, you have to follow instructions to
  [add Python to your PATH variable](docs/WINSETPATH.md).
 
 **Note:** 
-You can now type just the `python` or `python3` command
+You can now type just the `python`, `python3`, or `py` command
 in *Command Prompt* or *Terminal* 
 to run the Python interpreter.
 You can also run a *.py* file by running 
 `python filename.py`
 
-### 3. Download PyCharm (Community Edition)
+### 2. Choose an IDE
+An IDE is the program that you write code in.
+In this class, I will be using PyCharm (Community Edition).
+I highly recommend it for writing Python code,
+but you are free to follow along in your IDE of choice.
+
 Download here: https://www.jetbrains.com/pycharm/download/
 
 Install, open, and use the default settings.
 
-### 4. Download the course files
+### 3. Download the course files
 If you're viewing this on GitHub already, stay on this page.
 Otherwise, go to the GitHub repository: https://github.com/ariannedee/python-level-2
 
@@ -63,22 +71,29 @@ Otherwise, go to the GitHub repository: https://github.com/ariannedee/python-lev
 Clone the repository.
 
 #### If you don't know git:
-1. Click the "Clone or download" (green) button at the top-right of the page
+1. Click the "Code" (green) button at the top-right of the page
 2. Click "Download ZIP"
 3. Unzip it and move the **python-level-2-master** folder to a convenient location
 
-### 5. At the beginning of class, download the PDF of the slides and reference material
+### 4. Set up before class
+Open your IDE and load the course files.
+Run the file `python-level-2-master/Examples/example_1_review.py` and make sure it runs properly.
+
+### 5. At the start of class
+Download the PDF of the slides and reference material.
 These should be in the **Resources** widget
 
 ## FAQs
 ### Can I use Python 2?
 
-Yes, but I highly recommend using Python 3. If you are using Python 2, a few commands will be different and you can't use [f-strings](https://realpython.com/python-f-strings/) to format strings.
-Please see the accompanying resource PDF (step 5) for a list of differences you'll see in this class.
+Yes, but I highly recommend using Python 3. 
+If you are using Python 2, a few commands will be different and you can't use [f-strings](https://realpython.com/python-f-strings/) to format strings.
+Please see the accompanying resource PDF (page 5) for a list of differences you'll see in this class.
 
 ### Can I use a different code editor besides PyCharm?
 
-Yes, but it is only recommended if you are already know it and are comfortable navigating to different files and running commands in the command line. If it has syntax highlighting for Python, that is ideal.
+Yes, but it is only recommended if you are already know it and are comfortable navigating to different files and running commands in the command line. 
+If it has syntax highlighting for Python, that is ideal.
 
 ### PyCharm can't find Python 3
 
