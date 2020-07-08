@@ -75,7 +75,7 @@ Clone the repository.
 2. Click "Download ZIP"
 3. Unzip it and move the **python-level-2-master** folder to a convenient location
 
-### 4. Set up before class
+### 4. Setup before class
 Open your IDE and load the course files.
 Run the file `python-level-2-master/Examples/example_1_review.py` and make sure it runs properly.
 
