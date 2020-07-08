@@ -18,7 +18,7 @@ letter = input('Number of countries that start with letter: ')
 letter = letter.capitalize()
 
 # Print the number of countries that start with the letter
-letter_countries = countries[letter]
+letter_countries = countries.get(letter, [])
 print(f'{len(letter_countries)} countries start with an {letter}')
 
 # Create text file that lists the countries starting with the letter
