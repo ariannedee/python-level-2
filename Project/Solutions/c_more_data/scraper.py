@@ -17,69 +17,62 @@ response = requests.get(URL, headers=headers)
 assert response.status_code == 200
 
 html_doc = response.text
-
-# Uncomment following lines if you have no internet or if the Wikipedia page has changed
-# with open('../../UN_countries_full.html', 'r') as file:
-#     html_doc = ''
-#     for line in file:
-#         html_doc += line
-
 soup = BeautifulSoup(html_doc, 'html.parser')
 
-table = soup.find('table', attrs={'class': 'wikitable'})
-assert table.caption.string
+country_dicts = []
 
-rows = table.tbody.find_all('tr')
-
-country_list = []
+table = soup.find('table', attrs={"class": "wikitable"})
+rows = table.find_all('tr')
 for row in rows:
-    country_name_th = row.find('th', attrs={'scope': 'row'})
-    if country_name_th:
-        country_name = country_name_th.a.string.strip()
-        country_url = country_name_th.a['href']
-        date_joined_td = row.find_all('td')[1]
-        date_joined = date_joined_td.span.string.strip()
+    if row.td:
+        tds = row.find_all('td')
+        # Get the name
+        links = tds[0].find_all('a')
+        name = links[1].string
+        # Get the URL
+        url = links[1]['href']
+        # Get the date joined
+        date_joined = tds[1].span.string
 
-        country_data = {
-            'Name': country_name,
-            'Date Joined': date_joined,
-            'URL': BASE_URL + country_url
+        country_dict = {
+            'Name': name,
+            'URL': BASE_URL + url,
+            'Date Joined': date_joined
         }
+        country_dicts.append(country_dict)
 
-        country_list.append(country_data)
-
-assert len(country_list) > 100
-
-
-def get_population(table):
-    tr = table.find('tr', attrs={'class': 'mergedtoprow'}, string='Population')
-    text = tr.next_sibling.find('td').text
-    return text.strip().split('[')[0].strip()
+assert len(country_dicts) > 100
 
 
-def get_area(table):
-    tr = table.find('tr', attrs={'class': 'mergedtoprow'}, string='Area ')
-    if not tr:
-        tr = table.find('tr', attrs={'class': 'mergedtoprow'}, string='Area')
-
-    text = tr.next_sibling.find('td').text
-    return text.split('\xa0')[0].split('[')[0].strip()
+def get_area():
+    tr = table.find('tr', string="Area ").next_sibling
+    area = tr.td.text.strip()
+    return area.split('[')[0].split('\xa0')[0]
 
 
-for country_dict in country_list[:3]:
-    response = requests.get(country_dict['URL'], headers=headers)
-    soup = BeautifulSoup(response.text, 'html.parser')
+def get_population():
+    tr = table.find('tr', string="Population").next_sibling
+    population = tr.td.text.strip()
+    return population.split('[')[0].split(" ")[0]
 
-    tables = soup.find_all('table', attrs={'class': 'geography'})
-    assert len(tables) == 1
 
-    table = tables[0]
-    country_dict['Area (km2)'] = get_area(table)
-    country_dict['Population'] = get_population(table)
+for country_dict in country_dicts[:5]:
+    response = requests.get(country_dict['URL'])
+    html_doc = response.text
+    soup = BeautifulSoup(html_doc, 'html.parser')
+    table = soup.table
 
-    time.sleep(0.5)
+    # Add new data to dict
+    country_dict['Area'] = get_area()
+    country_dict['Population'] = get_population()
 
+    # Only make requests as fast as a human could click links
+    time.sleep(1)
+
+print(country_dicts)
 with open('countries.csv', 'w') as file:
-    writer = csv.DictWriter(file, ('Name', 'Date Joined', 'Area (km2)', 'Population'), extrasaction='ignore')
+    # extrasaction=ignore ignores the URL field
+    writer = csv.DictWriter(file, ('Name', 'Date Joined', 'Area', 'Population'), extrasaction='ignore')
+
     writer.writeheader()
-    writer.writerows(country_list)
+    writer.writerows(country_dicts)
