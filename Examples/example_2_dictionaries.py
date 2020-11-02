@@ -33,3 +33,9 @@ canadian_capitals['XX'] = 'New capital'  # Add an item
 
 for code in canadian_capitals:
     print(f'The capital of {code} is {canadian_capitals[code]}')
+
+for capital in canadian_capitals.values():
+    print(capital)
+
+for province, capital in canadian_capitals.items():
+    print(f'The capital of {province} is {capital}')
