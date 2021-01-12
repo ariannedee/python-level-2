@@ -1,5 +1,5 @@
 import csv
-import time
+from time import sleep
 
 import requests
 from bs4 import BeautifulSoup
@@ -14,65 +14,60 @@ assert name and email
 
 headers = {'User-Agent': f'{name} ({email})'}
 response = requests.get(URL, headers=headers)
+
 assert response.status_code == 200
 
 html_doc = response.text
 soup = BeautifulSoup(html_doc, 'html.parser')
 
-country_dicts = []
-
-table = soup.find('table', attrs={"class": "wikitable"})
+table = soup.find('table', class_="wikitable")
 rows = table.find_all('tr')
-for row in rows:
-    if row.td:
-        tds = row.find_all('td')
-        # Get the name
-        links = tds[0].find_all('a')
-        name = links[1].string
-        # Get the URL
-        url = links[1]['href']
-        # Get the date joined
-        date_joined = tds[1].span.string
 
+country_dicts = []
+for row in rows:
+    columns = row.find_all('td')
+    if len(columns) > 0:
+        name_link = columns[0].find_all('a')[1]
+        name = name_link.string
+        url = name_link['href']
+        date_joined = columns[1].span.string
         country_dict = {
             'Name': name,
-            'URL': BASE_URL + url,
-            'Date Joined': date_joined
+            'Date Joined': date_joined,
+            'URL': BASE_URL + url
         }
         country_dicts.append(country_dict)
 
-assert len(country_dicts) > 100
 
-
-def get_area():
+def get_area(table):
     tr = table.find('tr', string="Area ").next_sibling
     area = tr.td.text.strip()
     return area.split('[')[0].split('\xa0')[0]
 
 
-def get_population():
+def get_population(table):
     tr = table.find('tr', string="Population").next_sibling
     population = tr.td.text.strip()
     return population.split('[')[0].split(" ")[0]
 
 
-for country_dict in country_dicts[:5]:
-    response = requests.get(country_dict['URL'])
+for country_dict in country_dicts[:3]:
+    url = country_dict['URL']
+    response = requests.get(url, headers=headers)
+
+    if response.status_code != 200:
+        break
+
     html_doc = response.text
     soup = BeautifulSoup(html_doc, 'html.parser')
     table = soup.table
 
     # Add new data to dict
-    country_dict['Area'] = get_area()
-    country_dict['Population'] = get_population()
+    country_dict['Area'] = get_area(table)
+    country_dict['Population'] = get_population(table)
+    sleep(1)
 
-    # Only make requests as fast as a human could click links
-    time.sleep(1)
-
-print(country_dicts)
 with open('countries.csv', 'w') as file:
-    # extrasaction=ignore ignores the URL field
-    writer = csv.DictWriter(file, ('Name', 'Date Joined', 'Area', 'Population'), extrasaction='ignore')
-
+    writer = csv.DictWriter(file, ['Name', 'Date Joined', 'Area', 'Population'], extrasaction="ignore")
     writer.writeheader()
     writer.writerows(country_dicts)

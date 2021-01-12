@@ -12,33 +12,29 @@ assert name and email
 
 headers = {'User-Agent': f'{name} ({email})'}
 response = requests.get(URL, headers=headers)
+
 assert response.status_code == 200
 
 html_doc = response.text
 soup = BeautifulSoup(html_doc, 'html.parser')
 
-country_dicts = []
-
-table = soup.find('table', attrs={"class": "wikitable"})
+table = soup.find('table', class_="wikitable")
 rows = table.find_all('tr')
-for row in rows:
-    if row.td:
-        tds = row.find_all('td')
-        # Get the name
-        links = tds[0].find_all('a')
-        name = links[1].string
-        # Get the date joined
-        date_joined = tds[1].span.string
 
+country_dicts = []
+for row in rows:
+    columns = row.find_all('td')
+    if len(columns) > 0:
+        name_col = columns[0]
+        name = name_col.find_all('a')[1].string
+        date_joined = columns[1].span.string
         country_dict = {
             'Name': name,
             'Date Joined': date_joined
         }
         country_dicts.append(country_dict)
 
-assert len(country_dicts) > 100
-
-with open('countries.csv', 'w') as file:
-    writer = csv.DictWriter(file, ('Name', 'Date Joined'))
+with open('data/countries.csv', 'w') as file:
+    writer = csv.DictWriter(file, ['Name', 'Date Joined'])
     writer.writeheader()
     writer.writerows(country_dicts)

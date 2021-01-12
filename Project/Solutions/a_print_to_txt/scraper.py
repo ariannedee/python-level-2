@@ -10,24 +10,24 @@ assert name and email
 
 headers = {'User-Agent': f'{name} ({email})'}
 response = requests.get(URL, headers=headers)
+
 assert response.status_code == 200
 
 html_doc = response.text
 soup = BeautifulSoup(html_doc, 'html.parser')
 
-countries = []
-
-table = soup.find('table', attrs={"class": "wikitable"})
+table = soup.find('table', class_="wikitable")
 rows = table.find_all('tr')
+
+countries = []
 for row in rows:
-    if row.td:
-        links = row.td.find_all('a')
-        name = links[1].string
+    columns = row.find_all('td')
+    if len(columns) > 0:
+        name_col = columns[0]
+        name = name_col.find_all('a')[1].string
         countries.append(name)
 
-assert len(countries) > 100
-
-with open('countries.txt', 'w') as file:
+with open('data/countries.txt', 'w') as file:
     for country in countries:
         file.write(country)
         file.write('\n')
