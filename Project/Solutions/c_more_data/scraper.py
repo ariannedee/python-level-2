@@ -3,43 +3,41 @@ import re
 from time import sleep
 
 import requests
-
 from bs4 import BeautifulSoup
 
 BASE_URL = "https://en.wikipedia.org"
 URL = BASE_URL + "/wiki/Member_states_of_the_United_Nations"
 
 # Todo: Update with your info
-name = None
-email = None
+name = "Arianne"
+email = "arianne.dee.studios@gmail.com"
 assert name and email
 
+# Dictionary of HTTP headers
 headers = {'User-Agent': f'{name} ({email})'}
-response = requests.get(URL, headers=headers)
 
-assert response.status_code == 200, f'Response got {response.status_code}'
+response = requests.get(URL, headers=headers)
+assert response.status_code == 200, f"Got response code {response.status_code}"
 
 html_doc = response.text
-
 soup = BeautifulSoup(html_doc, 'html.parser')
-table = soup.find('table', class_='wikitable')
 
-countries = []
-for row in table.find_all('tr'):
-    name_column = row.find('td')
-    if name_column:
+table = soup.find("table", class_="wikitable")
+country_list = []
+for row in table.find_all("tr"):
+    if row.td:
         country_dict = {}
-        name_link = name_column.find_all('a')[1]
-        name = name_link.string
-        country_dict['Name'] = name
+        td = row.find_all("td")[0]
+        link = td.find_all("a")[1]
+        country_name = link.string
+        country_dict["Name"] = country_name
+        country_dict['URL'] = BASE_URL + link['href']
 
-        country_dict['URL'] = BASE_URL + name_link['href']
+        td = row.find_all("td")[1]
+        date_joined = td.span.string
+        country_dict["Date joined"] = date_joined
 
-        date_column = row.find_all('td')[1]
-        date_joined = date_column.span.text
-        country_dict['Date Joined'] = date_joined
-
-        countries.append(country_dict)
+        country_list.append(country_dict)
 
 
 def get_area(table):
@@ -58,7 +56,7 @@ def get_population(table):
 
 
 errors = []
-for country_dict in countries:
+for country_dict in country_list[:4]:
     url = country_dict['URL']
     response = requests.get(url, headers=headers)
     soup = BeautifulSoup(response.text, 'html.parser')
@@ -75,7 +73,7 @@ if errors:  # Can investigate these pages further afterwards
     for country_dict in errors:
         print(f'  {country_dict["Name"]}: {country_dict["URL"]}')
 
-with open('data/countries.csv', 'w') as file:
-    writer = csv.DictWriter(file, fieldnames=('Name', 'Date Joined', 'Area', 'Population'), extrasaction='ignore')
+with open('countries.csv', 'w') as file:
+    writer = csv.DictWriter(file, fieldnames=('Name', 'Date joined', 'Area', 'Population'), extrasaction='ignore')
     writer.writeheader()
-    writer.writerows(countries)
+    writer.writerows(country_list)
