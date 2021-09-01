@@ -1,5 +1,7 @@
 import requests
+
 from bs4 import BeautifulSoup
+
 
 URL = "https://en.wikipedia.org/wiki/Member_states_of_the_United_Nations"
 
@@ -12,24 +14,23 @@ assert name and email
 headers = {'User-Agent': f'{name} ({email})'}
 
 response = requests.get(URL, headers=headers)
-assert response.status_code == 200, f"Got response code {response.status_code}"
+
+assert response.status_code == 200, f"Status was {response.status_code}"
 
 html_doc = response.text
 soup = BeautifulSoup(html_doc, 'html.parser')
 
+countries_list = []
 table = soup.find("table", class_="wikitable")
-country_list = []
 for row in table.find_all("tr"):
-    if row.td:
-        td = row.find_all("td")[0]
-        link = td.find_all("a")[1]
-        country_name = link.string
-        country_list.append(country_name)
-
-print(country_list)
-print(len(country_list))
+    cols = row.find_all("td")
+    if cols:
+        name_col = cols[0]
+        links = name_col.find_all("a")
+        name = links[1].string
+        countries_list.append(name)
 
 with open("data/countries.txt", "w") as file:
-    for country in country_list:
+    for country in countries_list:
         file.write(country)
         file.write("\n")
