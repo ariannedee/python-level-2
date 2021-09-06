@@ -1,9 +1,10 @@
 import csv
 import re
-from time import sleep
 
 import requests
+
 from bs4 import BeautifulSoup
+
 
 BASE_URL = "https://en.wikipedia.org"
 URL = BASE_URL + "/wiki/Member_states_of_the_United_Nations"
@@ -17,27 +18,27 @@ assert name and email
 headers = {'User-Agent': f'{name} ({email})'}
 
 response = requests.get(URL, headers=headers)
-assert response.status_code == 200, f"Got response code {response.status_code}"
+
+assert response.status_code == 200, f"Status was {response.status_code}"
 
 html_doc = response.text
 soup = BeautifulSoup(html_doc, 'html.parser')
 
-table = soup.find("table", class_="wikitable")
-country_list = []
+countries_list = []
+table = soup.find("table", class_="wikitable sortable")
 for row in table.find_all("tr"):
-    if row.td:
-        country_dict = {}
-        td = row.find_all("td")[0]
-        link = td.find_all("a")[1]
-        country_name = link.string
-        country_dict["Name"] = country_name
-        country_dict['URL'] = BASE_URL + link['href']
-
-        td = row.find_all("td")[1]
-        date_joined = td.span.string
-        country_dict["Date joined"] = date_joined
-
-        country_list.append(country_dict)
+    cols = row.find_all("td")
+    if cols:
+        name_col = cols[0]
+        links = name_col.find_all("a")
+        name = links[1].string
+        date_joined = cols[1].span.string
+        country_dict = {
+            "Name": name,
+            "Date joined": date_joined,
+            "URL": links[1]["href"],
+        }
+        countries_list.append(country_dict)
 
 
 def get_area(table):
@@ -55,25 +56,28 @@ def get_population(table):
     return population.split('[')[0].split(" ")[0]
 
 
-errors = []
-for country_dict in country_list[:4]:
-    url = country_dict['URL']
+errors = {}
+for country_dict in countries_list[:3]:
+    url = BASE_URL + country_dict["URL"]
     response = requests.get(url, headers=headers)
-    soup = BeautifulSoup(response.text, 'html.parser')
-    table = soup.table
+
+    assert response.status_code == 200, f"Status for {url} was {response.status_code}"
+
+    html_doc = response.text
+    soup = BeautifulSoup(html_doc, 'html.parser')
+    table = soup.find_all("table", class_="geography")[0]
     try:  # If any sub-page fails, skip it and keep track of it
         country_dict['Area'] = get_area(table)
         country_dict['Population'] = get_population(table)
-    except AttributeError:
-        errors.append(country_dict)
-    sleep(1)  # Limit rate at which you request pages
+    except AttributeError as e:
+        errors[country_dict["Name"]] = e
 
 if errors:  # Can investigate these pages further afterwards
     print(f'Error getting detail data from:')
-    for country_dict in errors:
-        print(f'  {country_dict["Name"]}: {country_dict["URL"]}')
+    for name, error in errors.items():
+        print(f'  {name}: {error}')
 
-with open('countries.csv', 'w') as file:
+with open("data/countries.csv", "w") as file:
     writer = csv.DictWriter(file, fieldnames=('Name', 'Date joined', 'Area', 'Population'), extrasaction='ignore')
     writer.writeheader()
-    writer.writerows(country_list)
+    writer.writerows(countries_list)
