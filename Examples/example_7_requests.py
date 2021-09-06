@@ -17,5 +17,5 @@ print(response.status_code)
 # Get text contents
 print(response.text)
 
-with open('data/google.html', 'w') as file:
+with open('data/google.html', 'w', encoding="utf-8") as file:
     file.write(response.text)
