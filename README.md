@@ -79,6 +79,9 @@ Clone the repository.
 Open your IDE and load the course files.
 Run the file `python-level-2-master/Examples/example_1_review.py` and make sure it runs properly.
 
+If you get an error running that file, follow the instructions here to configure your Python version in PyCharm:
+[Python interpreter setup](docs/PyCharm_interpreter.md)
+
 ### 5. At the start of class
 Download the PDF of the slides and reference material.
 These should be in the **Resources** widget
@@ -96,6 +99,8 @@ Yes, but it is only recommended if you are already know it and are comfortable n
 If it has syntax highlighting for Python, that is ideal.
 
 ### PyCharm can't find Python 3
+
+Visual instructions here: [Python interpreter setup](docs/PyCharm_interpreter.md)
 
 On a Mac:
 - Go to **PyCharm** > **Preferences**
