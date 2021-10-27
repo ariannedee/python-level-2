@@ -7,21 +7,21 @@ and which version is installed.
 
 ## Windows
 Look for `python.exe`
-- C:\Python37
-- C:\Program Files\Python37
-- C:\Users\\*username*\AppData\Local\Programs\Python\Python37-XX
+- C:\Python39
+- C:\Program Files\Python39
+- C:\Users\\*username*\AppData\Local\Programs\Python\Python39-XX
 
 ## Mac
-Look for `python3.7` or `python3`
+Look for `python3.9` or `python3`
 
 - /usr/local/bin
-- /Library/Frameworks/Python.framework/Versions/3.7/bin/
-- /usr/local/Cellar/python/3.7.X_X/bin/
+- /Library/Frameworks/Python.framework/Versions/3.9/bin/
+- /usr/local/Cellar/python/3.9.X_X/bin/
 - /Users/*username*/anaconda/bin/
 - /anaconda3/bin/
 
 ## Linux
-Look for `python3.7` or `python3`
+Look for `python3.9` or `python3`
 - /usr/bin/
 - /usr/local/bin
 
