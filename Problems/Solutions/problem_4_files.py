@@ -15,7 +15,7 @@ with open('data/countries.txt', 'r') as file:
 
 # Get user to provide a letter
 letter = input('Number of countries that start with letter: ')
-letter = letter.capitalize()
+letter = letter.upper()
 
 # Print the number of countries that start with the letter
 letter_countries = countries.get(letter, [])

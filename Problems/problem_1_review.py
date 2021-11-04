@@ -10,7 +10,7 @@ Test cases:
 
 
 # Helper method to test equality
-def equals(actual, expected):
+def assert_equals(actual, expected):
     assert actual == expected, f'Expected {expected}, got {actual}'
 
 
