@@ -14,26 +14,39 @@ assert name and email
 headers = {'User-Agent': f'{name} ({email})'}
 response = requests.get(URL, headers=headers)
 
-assert response.status_code == 200, f"Status code: {response.status_code}"
+assert response.status_code == 200, f"{response.status_code} - {response.reason}"
 
 html_doc = response.text
+
 soup = BeautifulSoup(html_doc, 'html.parser')
 
-table = soup.find("table", class_="wikitable")
+table = soup.find('table', class_='wikitable')
 
 countries = []
-for row in table.find_all("tr"):
-    cols = row.find_all("td")
-    if len(cols) > 0:
-        name = cols[0].span.a['title']
-        date_joined = cols[1].text.strip()
-        country_dict = {
-            "Name": name,
-            "Date Joined": date_joined
-        }
-        countries.append(country_dict)
+rows = table.find_all('tr')
+for row in rows:
+    cols = row.find_all('td')
+    if len(cols) == 0:
+        continue
+    name_col = cols[0]
+    links = name_col.find_all('a')
+    flag_link = links[0]
+    if flag_link.img:
+        name_link = links[1]
+    else:
+        name_link = flag_link
+    name = name_link.string
+    date_col = cols[1]
+    date_joined = date_col.text.strip()
+    country_dict = {
+        "Name": name,
+        "Date Joined": date_joined
+    }
+    countries.append(country_dict)
 
-with open("data/countries.csv", "w") as file:
-    writer = csv.DictWriter(file, ["Name", "Date Joined"], extrasaction="ignore")
+print(countries)
+
+with open('countries.csv', 'w') as file:
+    writer = csv.DictWriter(file, ["Name", "Date Joined"])
     writer.writeheader()
     writer.writerows(countries)

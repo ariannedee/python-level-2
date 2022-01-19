@@ -28,6 +28,9 @@ if response.status_code != 200:
 # Turn the response string into JSON data. Data is now a list of dictionaries representing repositories
 data = json.loads(response.text)
 
+# Or you can just use the json property.
+data = response.json()
+
 # Now do what you want with the data
 if len(data) > 0:
     # I want to list all of the attributes we can get from each repository

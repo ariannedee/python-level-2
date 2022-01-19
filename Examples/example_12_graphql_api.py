@@ -4,7 +4,6 @@ V4 GraphQL API documentation: https://developer.github.com/v4/
 To generate an authentication token for your user, follow: https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line
 """
 
-import json
 import requests
 import sys
 
@@ -28,8 +27,8 @@ query {
 }
 """
 # Send the query in the right format for GraphQL
-data = json.dumps({"query": query})
-response = requests.post(API_URL, headers=headers, data=data)
+data = {"query": query}
+response = requests.post(API_URL, headers=headers, json=data)
 
 # Handle bad requests (e.g. not authenticated)
 if response.status_code != 200:
@@ -38,7 +37,7 @@ if response.status_code != 200:
     sys.exit()
 
 # Turn the response string into JSON data. Data is now a list of dictionaries representing repositories
-response = json.loads(response.text)
+response = response.json()
 
 # Handle bad queries (e.g. improperly formatted query string)
 if 'errors' in response:

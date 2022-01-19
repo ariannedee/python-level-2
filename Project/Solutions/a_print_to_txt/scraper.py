@@ -12,22 +12,32 @@ assert name and email
 headers = {'User-Agent': f'{name} ({email})'}
 response = requests.get(URL, headers=headers)
 
-assert response.status_code == 200, f"Status code: {response.status_code}"
+assert response.status_code == 200, f"{response.status_code} - {response.reason}"
 
 html_doc = response.text
+
 soup = BeautifulSoup(html_doc, 'html.parser')
 
-table = soup.find("table", class_="wikitable")
+table = soup.find('table', class_='wikitable')
 
 countries = []
-for row in table.find_all("tr"):
-    cols = row.find_all("td")
-    if len(cols) > 0:
-        name = cols[0].span.a['title']
-        print(name)
-        countries.append(name)
+rows = table.find_all('tr')
+for row in rows:
+    cols = row.find_all('td')
+    if len(cols) == 0:
+        continue
+    name_col = cols[0]
+    links = name_col.find_all('a')
+    flag_link = links[0]
+    if flag_link.img:
+        name_link = links[1]
+    else:
+        name_link = flag_link
+    name = name_link.string
+    countries.append(name)
 
-with open("data/countries.txt", "w") as file:
+print(countries)
+
+with open('countries.txt', 'w') as file:
     for country in countries:
-        file.write(country)
-        file.write("\n")
+        file.write(country + '\n')
