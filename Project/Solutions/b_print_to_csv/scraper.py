@@ -1,5 +1,4 @@
 import csv
-
 import requests
 from bs4 import BeautifulSoup
 
@@ -14,39 +13,31 @@ assert name and email
 headers = {'User-Agent': f'{name} ({email})'}
 response = requests.get(URL, headers=headers)
 
-assert response.status_code == 200, f"{response.status_code} - {response.reason}"
+response.raise_for_status()
 
 html_doc = response.text
 
 soup = BeautifulSoup(html_doc, 'html.parser')
 
-table = soup.find('table', class_='wikitable')
-
 countries = []
+
+table = soup.find('table', class_='wikitable')
 rows = table.find_all('tr')
 for row in rows:
     cols = row.find_all('td')
-    if len(cols) == 0:
+    if not cols:
         continue
     name_col = cols[0]
-    links = name_col.find_all('a')
-    flag_link = links[0]
-    if flag_link.img:
-        name_link = links[1]
-    else:
-        name_link = flag_link
-    name = name_link.string
-    date_col = cols[1]
-    date_joined = date_col.text.strip()
-    country_dict = {
-        "Name": name,
-        "Date Joined": date_joined
+    name = name_col.a['title']
+    date = cols[1].text.strip()
+    country = {
+        'Name': name,
+        'Date Joined': date
     }
-    countries.append(country_dict)
+    countries.append(country)
 
 print(countries)
-
-with open('countries.csv', 'w') as file:
-    writer = csv.DictWriter(file, ["Name", "Date Joined"])
+with open('data/countries_1.csv', 'w') as file:
+    writer = csv.DictWriter(file, ['Name', 'Date Joined'])
     writer.writeheader()
     writer.writerows(countries)
