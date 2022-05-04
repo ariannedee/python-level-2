@@ -5,7 +5,7 @@ import requests
 from bs4 import BeautifulSoup
 
 BASE_URL = "https://en.wikipedia.org"
-URL = BASE_URL + "/wiki/Member_states_of_the_United_Nations"
+URL = f"{BASE_URL}/wiki/Member_states_of_the_United_Nations"
 
 # Todo: Update with your info
 name = None
@@ -16,47 +16,49 @@ assert name and email
 headers = {'User-Agent': f'{name} ({email})'}
 
 response = requests.get(URL, headers=headers)
+
 response.raise_for_status()
+
 html_doc = response.text
+
 soup = BeautifulSoup(html_doc, 'html.parser')
 
+table = soup.find('table', attrs={'class': 'wikitable'})
+
 countries = []
-
-table = soup.find('table', class_='wikitable')
-rows = table.find_all('tr')
-for row in rows:
-    cols = row.find_all('td')
-    if not cols:
+for row in table.find_all('tr'):
+    tds = row.find_all('td')
+    if len(tds) == 0:
         continue
-    name_col = cols[0]
-    name = name_col.a['title']
-    date = cols[1].text.strip()
-    country = {
+    name_link = tds[0].a
+    url = BASE_URL + name_link['href']
+    name = name_link['title']
+    date_joined = tds[1].text.strip()
+
+    country_dict = {
         'Name': name,
-        'Date Joined': date,
-        'URL': BASE_URL + name_col.a['href']
+        'Date Joined': date_joined,
+        'URL': url,
     }
-    countries.append(country)
+    countries.append(country_dict)
 
-error_countries = []
-for country_dict in countries[:10]:
-    response = requests.get(country_dict['URL'], headers=headers)
-    if response.status_code != 200:
-        error_countries.append(country_dict)
-        continue
+print(countries)
+
+for country in countries[:3]:
+    url = country['URL']
+    response = requests.get(url, headers=headers)
+    response.raise_for_status()
     html_doc = response.text
     soup = BeautifulSoup(html_doc, 'html.parser')
+
     lat = soup.find('span', class_='latitude').text
     lon = soup.find('span', class_='longitude').text
-    if not lat or not lon:
-        error_countries.append(error_countries)
-    country_dict['Latitude'] = lat
-    country_dict['Longitude'] = lon
+    country['Latitude'] = lat
+    country['Longitude'] = lon
+
     time.sleep(0.5)
 
-print(error_countries)
-
-with open('data/countries_2.csv', 'w') as file:
+with open('data/countries.csv', 'w') as file:
     writer = csv.DictWriter(file, ['Name', 'Date Joined', 'Latitude', 'Longitude'], extrasaction='ignore')
     writer.writeheader()
     writer.writerows(countries)

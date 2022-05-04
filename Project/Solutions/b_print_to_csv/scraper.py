@@ -2,6 +2,7 @@ import csv
 import requests
 from bs4 import BeautifulSoup
 
+
 URL = "https://en.wikipedia.org/wiki/Member_states_of_the_United_Nations"
 
 # Todo: Update with your info
@@ -19,25 +20,24 @@ html_doc = response.text
 
 soup = BeautifulSoup(html_doc, 'html.parser')
 
+table = soup.find('table', attrs={'class': 'wikitable'})
+
 countries = []
-
-table = soup.find('table', class_='wikitable')
-rows = table.find_all('tr')
-for row in rows:
-    cols = row.find_all('td')
-    if not cols:
+for row in table.find_all('tr'):
+    tds = row.find_all('td')
+    if len(tds) == 0:
         continue
-    name_col = cols[0]
-    name = name_col.a['title']
-    date = cols[1].text.strip()
-    country = {
-        'Name': name,
-        'Date Joined': date
-    }
-    countries.append(country)
+    name_link = tds[0].a
+    name = name_link['title']
+    date_joined = tds[1].text.strip()
 
-print(countries)
-with open('data/countries_1.csv', 'w') as file:
+    country_dict = {
+        'Name': name,
+        'Date Joined': date_joined,
+    }
+    countries.append(country_dict)
+
+with open('data/countries.csv', 'w') as file:
     writer = csv.DictWriter(file, ['Name', 'Date Joined'])
     writer.writeheader()
     writer.writerows(countries)

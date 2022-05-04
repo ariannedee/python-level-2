@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 
+
 URL = "https://en.wikipedia.org/wiki/Member_states_of_the_United_Nations"
 
 # Todo: Update with your info
@@ -18,16 +19,15 @@ html_doc = response.text
 
 soup = BeautifulSoup(html_doc, 'html.parser')
 
-countries = []
+table = soup.find('table', attrs={'class': 'wikitable'})
 
-table = soup.find('table', class_='wikitable')
-rows = table.find_all('tr')
-for row in rows:
-    cols = row.find_all('td')
-    if not cols:
+countries = []
+for row in table.find_all('tr'):
+    tds = row.find_all('td')
+    if len(tds) == 0:
         continue
-    name_col = cols[0]
-    name = name_col.a['title']
+    name_link = tds[0].a
+    name = name_link['title']
     countries.append(name)
 
 with open('data/countries.txt', 'w') as file:
