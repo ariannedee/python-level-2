@@ -6,8 +6,7 @@ all of the countries that start with that letter
 # Todo: Read data/countries.txt and save all countries
 
 # Get user to provide a letter
-letter = input('Number of countries that start with letter: ')
-letter = letter.capitalize()
+letter = input('Number of countries that start with letter: ').upper()
 
 # Todo: Print the number of countries that start with the letter
 

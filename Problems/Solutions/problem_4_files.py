@@ -14,8 +14,7 @@ with open('data/countries.txt', 'r') as file:
         countries[starting_letter].append(country)
 
 # Get user to provide a letter
-letter = input('Number of countries that start with letter: ')
-letter = letter.upper()
+letter = input('Number of countries that start with letter: ').upper()
 
 # Print the number of countries that start with the letter
 letter_countries = countries.get(letter, [])
