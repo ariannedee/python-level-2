@@ -42,7 +42,7 @@ Côte d'Ivoire
 Croatia
 Cuba
 Cyprus
-Czech Republic
+Czechia
 Democratic People's Republic of Korea
 Democratic Republic of the Congo
 Denmark
@@ -174,7 +174,7 @@ Togo
 Tonga
 Trinidad and Tobago
 Tunisia
-Turkey
+Türkiye
 Turkmenistan
 Tuvalu
 Uganda
