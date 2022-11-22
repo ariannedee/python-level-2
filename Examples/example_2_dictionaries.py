@@ -50,5 +50,8 @@ for capital in canadian_capitals.values():
 for province, capital in canadian_capitals.items():
     print(f'The capital of {province} is {capital}')
 
-if 'AA' in canadian_capitals:
+if 'YT' in canadian_capitals:
     print('Found key')
+
+if 'Victoria' in canadian_capitals.values():
+    print('Found value')
