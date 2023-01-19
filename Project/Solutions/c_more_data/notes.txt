@@ -1,0 +1,11 @@
+Notes from Jan 19 class:
+
+1. The link for New Zealand goes to the page for Realm of New Zealand (https://en.wikipedia.org/wiki/Realm_of_New_Zealand)
+   - This page has further links to the nations within the Realm of New Zealand:
+     - New Zealand (country page with coordinates)
+     - Cook Islands
+     - Niue
+     - Ross Dependency
+     - Tokelau
+2. With 0s sleep delay, it took 3m 40s to run
+   - would be an extra ~1.5 min with a 0.5s sleep

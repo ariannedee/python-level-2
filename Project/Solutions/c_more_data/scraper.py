@@ -5,7 +5,7 @@ import requests
 from bs4 import BeautifulSoup
 from requests import Response
 
-SLEEP_SECS = 0
+SLEEP_SECS = 0.5
 
 start = time.time()
 BASE_URL = "https://en.wikipedia.org"
@@ -62,4 +62,4 @@ with open('countries.csv', 'w') as file:
 
 end = time.time()
 
-print(f"Took {round(end - start, 1)}s to run ({(end - start) // 60}m {(end - start) % 60}s)")
+print(f"Took {round(end - start, 1)}s to run ({round((end - start) // 60)}m {round((end - start) % 60)}s)")
