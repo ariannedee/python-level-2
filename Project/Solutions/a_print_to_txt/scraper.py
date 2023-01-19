@@ -10,22 +10,19 @@ assert name and email
 
 headers = {'User-Agent': f'{name} ({email})'}
 response = requests.get(URL, headers=headers)
-
 response.raise_for_status()
-
 html_doc = response.text
 soup = BeautifulSoup(html_doc, 'html.parser')
-
 table = soup.find('table', class_='wikitable')
-rows = table.find_all('tr')[1:]
+rows = table.find_all('tr')
+
 countries = []
-for row in rows:
-    name = row.th.a.string
+for row in rows[1:]:
+    name_col = row.th
+    link = name_col.a
+    name = link.string
     countries.append(name)
 
-print(len(countries))
-
-with open("countries.txt", "w") as file:
+with open('countries.txt', 'w') as file:
     for country in countries:
-        file.write(country)
-        file.write('\n')
+        file.write(country + '\n')
