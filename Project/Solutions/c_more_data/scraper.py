@@ -3,7 +3,11 @@ import time
 
 import requests
 from bs4 import BeautifulSoup
+from requests import Response
 
+SLEEP_SECS = 0
+
+start = time.time()
 BASE_URL = "https://en.wikipedia.org"
 URL = BASE_URL + "/wiki/Member_states_of_the_United_Nations"
 
@@ -13,38 +17,49 @@ email = None
 assert name and email
 
 headers = {'User-Agent': f'{name} ({email})'}
-
-response = requests.get(URL, headers=headers)
-
+response: Response = requests.get(URL, headers=headers)
 response.raise_for_status()
-
 html_doc = response.text
 soup = BeautifulSoup(html_doc, 'html.parser')
-
 table = soup.find('table', class_='wikitable')
-rows = table.find_all('tr')[1:]
-country_dicts = []
-for row in rows:
-    name = row.th.a.string
-    url = BASE_URL + row.th.a['href']
-    date_joined = row.td.span.string
-    country_dict = {
-        'Name': name,
-        'Date Joined': date_joined,
-        'URL': url,
-    }
-    country_dicts.append(country_dict)
+rows = table.find_all('tr')
 
-for country in country_dicts[:3]:
-    url = country['URL']
-    response = requests.get(url, headers=headers)
+countries = []
+for row in rows[1:]:
+    name_col = row.th
+    link = name_col.a
+    name = link.string
+    country_url = link['href']
+    date_joined = row.td.span.string.strip()
+    country: dict = {
+        'Name': name,
+        'Date joined': date_joined,
+        'URL': BASE_URL + country_url,
+    }
+    countries.append(country)
+
+for country in countries[:]:
+    country_url = country['URL']
+    response: Response = requests.get(country_url, headers=headers)
+    if response.status_code != 200:
+        print(f"[WARNING] Couldn't get {country_url}")
+        continue
     html_doc = response.text
     soup = BeautifulSoup(html_doc, 'html.parser')
-    country['Latitude'] = soup.find('span', class_='latitude').string
-    country['Longitude'] = soup.find('span', class_='longitude').string
-    time.sleep(0.5)
+    try:
+        latitude = soup.find('span', class_='latitude').string
+        longitude = soup.find('span', class_='longitude').string
+        country['Latitude'] = latitude
+        country['Longitude'] = longitude
+    except AttributeError:
+        print(f"[WARNING] {country['Name']} doesn't have a latitude or longitude in {country_url}")
+    time.sleep(SLEEP_SECS)
 
-with open("countries_more.csv", "w") as file:
-    writer = csv.DictWriter(file, fieldnames=['Name', 'Date Joined', 'URL', 'Latitude', 'Longitude'])
+with open('countries.csv', 'w') as file:
+    writer = csv.DictWriter(file, ['Name', 'Date joined', 'URL', 'Latitude', 'Longitude'])
     writer.writeheader()
-    writer.writerows(country_dicts)
+    writer.writerows(countries)
+
+end = time.time()
+
+print(f"Took {round(end - start, 1)}s to run ({(end - start) // 60}m {(end - start) % 60}s)")
