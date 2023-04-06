@@ -8,7 +8,13 @@ code = {
     'r': 18, 's': 19, 't': 20, 'u': 21, 'v': 22, 'w': 23, 'x': 24, 'y': 25, 'z': 26
 }
 
+def encrypt(plaintext):
+    ciphertext = ""
+    return ciphertext
+
+assert encrypt("hello") == "8 5 12 12 15"
+
 # Get a message from the user
 message = input("What is your message? ")
 
-# Todo: Translate user input into code of numbers
+print(encrypt(message))
