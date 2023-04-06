@@ -15,6 +15,8 @@ except ValueError:  # Catch multiple error types with different behaviour
     print("Failure: Value error")
 except NameError:
     print("Failure: Name error")
+except Exception as e:
+    print(repr(e))
 
 
 try:
@@ -26,3 +28,10 @@ else:
     print('Everything worked')  # Runs after try block finishes without errors
 finally:
     print('This always happens')  # Runs after everything, even if there was an error
+
+
+class MyCustomError(Exception):
+    pass
+
+
+raise MyCustomError("Here's an error message")
