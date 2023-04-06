@@ -2,37 +2,37 @@ import csv
 
 import requests
 from bs4 import BeautifulSoup
-from requests import Response
+from csv import DictWriter
 
 URL = "https://en.wikipedia.org/wiki/Member_states_of_the_United_Nations"
 
-# Todo: Update with your info
-name = None
-email = None
-assert name and email
+response = requests.get(URL)
 
-headers = {'User-Agent': f'{name} ({email})'}
-response: Response = requests.get(URL, headers=headers)
 response.raise_for_status()
+
 html_doc = response.text
+
+# with open('UN_countries_full.html', 'w', encoding="utf-8") as file:
+#     file.write(html_doc)
+#
+# with open('UN_countries_full.html', 'r') as file:
+#     html_doc = file.read()
+
 soup = BeautifulSoup(html_doc, 'html.parser')
-table = soup.find('table', class_='wikitable')
-rows = table.find_all('tr')
 
 countries = []
-for row in rows[1:]:
-    name_col = row.th
-    link = name_col.a
-    name = link.string
-    date_joined = row.td.span.string.strip()
-    country: dict = {
-        'Name': name,
-        'Date joined': date_joined
-    }
+table = soup.find('table', class_='wikitable')
+for row in table.find_all('tr'):
+    col_1 = row.find('th', scope='row')
+    if not col_1:
+        continue
+    name_link = col_1.a
+    name = name_link.string
+    date_joined = row.td.span.string
+    country = {'name': name, 'date joined': date_joined}
     countries.append(country)
 
-
-with open('countries.csv', 'w') as file:
-    writer = csv.DictWriter(file, ['Name', 'Date joined'])
+with open('data/countries.csv', 'w') as file:
+    writer = DictWriter(file, fieldnames=['name', 'date joined'])
     writer.writeheader()
     writer.writerows(countries)
