@@ -14,21 +14,14 @@ def assert_equals(actual, expected):
     assert actual == expected, f'Expected {expected}, got {actual}'
 
 
-def factorial(num):
-    product = 1
-    for i in range(num):
-        product *= i + 1
-    return product
+# Todo: Create a function that produces the factorial of a number
 
-assert_equals(factorial(0), 1)
-assert_equals(factorial(1), 1)
-assert_equals(factorial(2), 2)
-assert_equals(factorial(4), 24)
 
-n = int(input("Enter an integer: "))
+# Todo: Test factorial function
 
-factorials = []
-for i in range(n):
-    factorials.append(factorial(i))
 
-print(factorials)
+# Todo: Request a number from the user
+
+
+# Todo: Print a list of factorials from 0 to the given number
+
