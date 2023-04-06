@@ -1,65 +1,46 @@
-import csv
-import time
-
 import requests
 from bs4 import BeautifulSoup
-from requests import Response
+from csv import DictWriter
 
-SLEEP_SECS = 0.5
-
-start = time.time()
 BASE_URL = "https://en.wikipedia.org"
 URL = BASE_URL + "/wiki/Member_states_of_the_United_Nations"
 
-# Todo: Update with your info
-name = None
-email = None
-assert name and email
+response = requests.get(URL)
 
-headers = {'User-Agent': f'{name} ({email})'}
-response: Response = requests.get(URL, headers=headers)
 response.raise_for_status()
+
 html_doc = response.text
+
+# with open('UN_countries_full.html', 'w', encoding="utf-8") as file:
+#     file.write(html_doc)
+#
+# with open('UN_countries_full.html', 'r') as file:
+#     html_doc = file.read()
+
 soup = BeautifulSoup(html_doc, 'html.parser')
-table = soup.find('table', class_='wikitable')
-rows = table.find_all('tr')
 
 countries = []
-for row in rows[1:]:
-    name_col = row.th
-    link = name_col.a
-    name = link.string
-    country_url = link['href']
-    date_joined = row.td.span.string.strip()
-    country: dict = {
-        'Name': name,
-        'Date joined': date_joined,
-        'URL': BASE_URL + country_url,
-    }
+table = soup.find('table', class_='wikitable')
+for row in table.find_all('tr'):
+    col_1 = row.find('th', scope='row')
+    if not col_1:
+        continue
+    name_link = col_1.a
+    name = name_link.string
+    date_joined = row.td.span.string
+    country = {'name': name, 'date joined': date_joined, 'url': BASE_URL + name_link['href']}
     countries.append(country)
 
-for country in countries[:]:
-    country_url = country['URL']
-    response: Response = requests.get(country_url, headers=headers)
-    if response.status_code != 200:
-        print(f"[WARNING] Couldn't get {country_url}")
-        continue
+for country in countries[:3]:
+    response = requests.get(country['url'])
     html_doc = response.text
     soup = BeautifulSoup(html_doc, 'html.parser')
-    try:
-        latitude = soup.find('span', class_='latitude').string
-        longitude = soup.find('span', class_='longitude').string
-        country['Latitude'] = latitude
-        country['Longitude'] = longitude
-    except AttributeError:
-        print(f"[WARNING] {country['Name']} doesn't have a latitude or longitude in {country_url}")
-    time.sleep(SLEEP_SECS)
+    lat = soup.find('span', class_='latitude').string
+    lon = soup.find('span', class_='longitude').string
+    country['latitude'] = lat
+    country['longitude'] = lon
 
-with open('countries.csv', 'w') as file:
-    writer = csv.DictWriter(file, ['Name', 'Date joined', 'URL', 'Latitude', 'Longitude'])
+with open('data/countries.csv', 'w') as file:
+    writer = DictWriter(file, fieldnames=['name', 'date joined', 'latitude', 'longitude'], extrasaction='ignore')
     writer.writeheader()
     writer.writerows(countries)
-
-end = time.time()
-
-print(f"Took {round(end - start, 1)}s to run ({round((end - start) // 60)}m {round((end - start) % 60)}s)")
