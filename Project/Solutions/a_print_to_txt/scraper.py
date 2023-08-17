@@ -1,33 +1,40 @@
 import requests
 from bs4 import BeautifulSoup
 
+
+GET_DATA = False
+
 URL = "https://en.wikipedia.org/wiki/Member_states_of_the_United_Nations"
 
-response = requests.get(URL)
+name = None
+email = None
+headers = {'User-Agent': f'{name} ({email})'}
 
-response.raise_for_status()
+if GET_DATA:
+    response = requests.get(URL, headers=headers)
 
-html_doc = response.text
+    response.raise_for_status()
 
-# with open('UN_countries_full.html', 'w', encoding="utf-8") as file:
-#     file.write(html_doc)
-#
-# with open('UN_countries_full.html', 'r') as file:
-#     html_doc = file.read()
+    with open('wikipedia.html', 'w', encoding="utf-8") as file:
+        html_doc = response.text
+        file.write(html_doc)
+else:
+    with open('wikipedia.html', 'r') as file:
+        html_doc = file.read()
 
 soup = BeautifulSoup(html_doc, 'html.parser')
+table = soup.find('table', class_='wikitable')
+rows = table.find_all('tr')
 
 countries = []
-table = soup.find('table', class_='wikitable')
-for row in table.find_all('tr'):
-    col_1 = row.find('th', scope='row')
-    if not col_1:
+for row in rows:
+    name_link = row.th.a
+    if not name_link:  # Header row
         continue
-    name_link = col_1.a
+
     name = name_link.string
     countries.append(name)
 
-with open('data/countries.txt', 'w') as file:
+with open('countries.txt', 'w') as file:
     for country in countries:
-        file.write(country)
-        file.write('\n')
+        file.write(country + '\n')
