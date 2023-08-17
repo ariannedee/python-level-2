@@ -1,46 +1,65 @@
+import csv
+import time
+
 import requests
 from bs4 import BeautifulSoup
-from csv import DictWriter
+
+GET_DATA = False
+WRITE_DATA = True
 
 BASE_URL = "https://en.wikipedia.org"
 URL = BASE_URL + "/wiki/Member_states_of_the_United_Nations"
 
-response = requests.get(URL)
+name = None
+email = None
+headers = {'User-Agent': f'{name} ({email})'}
 
-response.raise_for_status()
+if GET_DATA:
+    response = requests.get(URL, headers=headers)
 
-html_doc = response.text
+    response.raise_for_status()
 
-# with open('UN_countries_full.html', 'w', encoding="utf-8") as file:
-#     file.write(html_doc)
-#
-# with open('UN_countries_full.html', 'r') as file:
-#     html_doc = file.read()
+    with open('wikipedia.html', 'w', encoding="utf-8") as file:
+        html_doc = response.text
+        file.write(html_doc)
+else:
+    with open('wikipedia.html', 'r') as file:
+        html_doc = file.read()
 
 soup = BeautifulSoup(html_doc, 'html.parser')
+table = soup.find('table', class_='wikitable')
+rows = table.find_all('tr')
 
 countries = []
-table = soup.find('table', class_='wikitable')
-for row in table.find_all('tr'):
-    col_1 = row.find('th', scope='row')
-    if not col_1:
+for row in rows:
+    name_link = row.th.a
+    if not name_link:  # Header row
         continue
-    name_link = col_1.a
+
     name = name_link.string
-    date_joined = row.td.span.string
-    country = {'name': name, 'date joined': date_joined, 'url': BASE_URL + name_link['href']}
+    date = row.td.span.string
+    link = name_link['href']
+    country = {
+        'Name': name,
+        'Date Joined': date,
+        'URL': BASE_URL + link,
+    }
     countries.append(country)
 
-for country in countries[:3]:
-    response = requests.get(country['url'])
-    html_doc = response.text
-    soup = BeautifulSoup(html_doc, 'html.parser')
-    lat = soup.find('span', class_='latitude').string
-    lon = soup.find('span', class_='longitude').string
-    country['latitude'] = lat
-    country['longitude'] = lon
+for country in countries:
+    response = requests.get(country['URL'], headers=headers)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    latitude = soup.find('span', class_='latitude')
+    if latitude:
+        country['Latitude'] = latitude.string
+        country['Longitude'] = soup.find('span', class_='longitude').string
+    else:
+        print(f"Not latitude/longitude for {country['Name']}: {country['URL']}")
 
-with open('data/countries.csv', 'w') as file:
-    writer = DictWriter(file, fieldnames=['name', 'date joined', 'latitude', 'longitude'], extrasaction='ignore')
-    writer.writeheader()
-    writer.writerows(countries)
+    time.sleep(0.5)  # Simulate a human clicking links
+
+if WRITE_DATA:
+    with open('countries_more.csv', 'w') as file:
+        writer = csv.DictWriter(file, ['Name', 'Date Joined', 'URL', 'Latitude', 'Longitude'], extrasaction='ignore')
+        writer.writeheader()
+        writer.writerows(countries)
