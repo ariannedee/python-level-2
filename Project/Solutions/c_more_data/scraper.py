@@ -1,65 +1,61 @@
 import csv
+import logging
 import time
 
 import requests
 from bs4 import BeautifulSoup
-
-GET_DATA = False
-WRITE_DATA = True
 
 BASE_URL = "https://en.wikipedia.org"
 URL = BASE_URL + "/wiki/Member_states_of_the_United_Nations"
 
 name = None
 email = None
+
+assert name and email, "Fill in your name and email"
+
 headers = {'User-Agent': f'{name} ({email})'}
 
-if GET_DATA:
-    response = requests.get(URL, headers=headers)
+response = requests.get(URL, headers=headers)
+response.raise_for_status()
 
-    response.raise_for_status()
-
-    with open('wikipedia.html', 'w', encoding="utf-8") as file:
-        html_doc = response.text
-        file.write(html_doc)
-else:
-    with open('wikipedia.html', 'r') as file:
-        html_doc = file.read()
-
+html_doc = response.text
 soup = BeautifulSoup(html_doc, 'html.parser')
-table = soup.find('table', class_='wikitable')
-rows = table.find_all('tr')
 
 countries = []
+
+table = soup.find('table', class_='wikitable')
+rows = table.find_all('tr')
 for row in rows:
-    name_link = row.th.a
-    if not name_link:  # Header row
-        continue
+    name_column = row.th
+    link = name_column.a
+    if link:
+        url = link['href']
+        country_name = link.string
+        date_of_admission = row.td.span.string
+        country = {
+            'Name': country_name,
+            'Date of admission': date_of_admission,
+            'URL': BASE_URL + url,
+        }
+        countries.append(country)
 
-    name = name_link.string
-    date = row.td.span.string
-    link = name_link['href']
-    country = {
-        'Name': name,
-        'Date Joined': date,
-        'URL': BASE_URL + link,
-    }
-    countries.append(country)
-
-for country in countries:
+for country in countries[:3]:
     response = requests.get(country['URL'], headers=headers)
-    soup = BeautifulSoup(response.text, 'html.parser')
-    latitude = soup.find('span', class_='latitude')
-    if latitude:
-        country['Latitude'] = latitude.string
+    if response.status_code != 200:
+        logging.warning(f"Error getting page for {country['Name']} at {country['URL']}")
+        continue
+    html_doc = response.text
+    soup = BeautifulSoup(html_doc, 'html.parser')
+    try:
+        country['Latitude'] = soup.find('span', class_='latitude').string
         country['Longitude'] = soup.find('span', class_='longitude').string
-    else:
-        print(f"Not latitude/longitude for {country['Name']}: {country['URL']}")
+    except AttributeError:
+        logging.warning(f"Error getting lat and lon for {country['Name']} at {country['URL']}")
+    time.sleep(0.5)
 
-    time.sleep(0.5)  # Simulate a human clicking links
+print(countries[0])
 
-if WRITE_DATA:
-    with open('countries_more.csv', 'w') as file:
-        writer = csv.DictWriter(file, ['Name', 'Date Joined', 'URL', 'Latitude', 'Longitude'], extrasaction='ignore')
-        writer.writeheader()
-        writer.writerows(countries)
+with open('countries_more.csv', 'w') as file:
+    writer = csv.DictWriter(file, fieldnames=('Name', 'Date of admission', 'Latitude', 'Longitude'), extrasaction='ignore')
+    writer.writeheader()
+    writer.writerows(countries)
