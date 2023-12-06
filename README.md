@@ -1,17 +1,17 @@
 # Programming with Python: Beyond the Basics Live Training
 _How to Write a Web Scraper in Python_
 
-This is the code for the *Safari Live Training* - **Programming with Python: Beyond the Basics** presented by Arianne Dee
+This is the code for the *O'Reilly Live Training* - **Programming with Python: Beyond the Basics** presented by Arianne Dee
 
 Before the class, please follow these instructions:
-1. [Install Python](#1-install-python-36-or-higher)
+1. [Install Python](#1-install-python-38-or-higher)
 2. [Choose an IDE](#2-choose-an-ide)
 3. [Download the code](#3-download-the-course-files)
 4. [Setup before class](#4-setup-before-class)
 5. [At the start of class](#5-at-the-start-of-class)
 
 ## Set up instructions
-### 1. Install Python 3.6 or higher
+### 1. Install Python 3.8 or higher
 Go to https://www.python.org/downloads/
 
 Click the yellow button at the top to download the latest version of Python.
@@ -73,7 +73,7 @@ Clone the repository.
 #### If you don't know git:
 1. Click the "Code" (green) button at the top-right of the page
 2. Click "Download ZIP"
-3. Unzip it and move the **python-level-2-master** folder to a convenient location
+3. Unzip it and move the **python-level-2-main** folder to a convenient location
 
 ### 4. Setup before class
 Open your IDE and load the course files.
