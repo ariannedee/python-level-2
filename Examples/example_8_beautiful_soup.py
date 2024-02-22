@@ -10,7 +10,7 @@ soup = BeautifulSoup(html_doc, 'html.parser')
 
 
 # Print the HTML document with nesting and indentation
-soup.prettify(formatter='html')
+print(soup.prettify(formatter='html'))
 
 
 # FINDING MULTIPLE ELEMENTS

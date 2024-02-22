@@ -34,6 +34,7 @@ print(canadian_capitals['ON'])  # Get an item
 del canadian_capitals['AB']  # Delete an item
 canadian_capitals['NU'] = 'Bob'  # Update an item
 canadian_capitals['XX'] = 'New capital'  # Add an item
+print(len(canadian_capitals))  # Get the length
 
 # Get value if the key exists, else return None
 print(canadian_capitals.get('AA'))
