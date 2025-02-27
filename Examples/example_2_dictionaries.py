@@ -1,15 +1,3 @@
-# Dictionaries as objects
-book_1 = {"title": "To Kill a Mockingbird", "author": "Harper Lee", "published_year": 1960}
-book_2 = {"title": "Jane Eyre", "author": "Charlotte Brontë", "published_year": 1847}
-book_3 = {"title": "1984", "author": "George Orwell", "published_year": 1949}
-
-books = [book_1, book_2, book_3]
-
-def book_sort_key(book):
-    return book['published_year']
-
-books.sort(key=lambda book: book['published_year'])
-
 # Dictionaries as maps
 canadian_capitals = {
     'AB': 'Edmonton',
@@ -56,3 +44,16 @@ if 'YT' in canadian_capitals:
 
 if 'Victoria' in canadian_capitals.values():
     print('Found value')
+
+# Dictionaries as objects
+book_1 = {"title": "To Kill a Mockingbird", "author": "Harper Lee", "published_year": 1960}
+book_2 = {"title": "Jane Eyre", "author": "Charlotte Brontë", "published_year": 1847}
+book_3 = {"title": "1984", "author": "George Orwell", "published_year": 1949}
+
+books = [book_1, book_2, book_3]
+
+def book_sort_key(book):
+    return book['published_year']
+
+books.sort(key=lambda book: book['published_year'])
+print(books)
