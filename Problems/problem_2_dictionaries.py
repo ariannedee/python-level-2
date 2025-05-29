@@ -10,6 +10,7 @@ code = {
 
 def encrypt(plaintext):
     ciphertext = ""
+    ...  # Fill in implementation
     return ciphertext
 
 assert encrypt("hello!") == "8 5 12 12 15 !", f"Got {encrypt('hello')=}"
