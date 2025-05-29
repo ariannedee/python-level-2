@@ -12,7 +12,7 @@ canadian_capitals = {
     'PE': 'Charlottetown',
     'QC': 'Quebec City',
     'SK': 'Regina',
-    'YT': 'Whitehorse'
+    'YT': 'Whitehorse',
 }
 
 canadian_capitals.keys()    # ['AB', 'BC', ...]
@@ -56,4 +56,6 @@ def book_sort_key(book):
     return book['published_year']
 
 books.sort(key=lambda book: book['published_year'])
-print(books)
+
+from pprint import pprint
+pprint(books)
