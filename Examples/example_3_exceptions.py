@@ -3,7 +3,7 @@ try:
     print('Success!')
 except ValueError as e:
     print("Fail!")
-    print(e)
+    print(repr(e))
 
 
 print('Got here')
