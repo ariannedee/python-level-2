@@ -8,15 +8,16 @@ code = {
     'r': 18, 's': 19, 't': 20, 'u': 21, 'v': 22, 'w': 23, 'x': 24, 'y': 25, 'z': 26
 }
 
+def encrypt(plaintext):
+    ciphertext = ""
+    for char in plaintext.lower():
+        coded_char = code.get(char, char)
+        ciphertext += str(coded_char) + ' '
+    return ciphertext.strip()
+
+assert encrypt("hello!") == "8 5 12 12 15 !", f"Got {encrypt('hello!')=}"
+
 # Get a message from the user
 message = input("What is your message? ")
 
-# Translate user input into code of numbers
-coded_message = ''
-for char in message.lower():
-    if char in code:
-        coded_message += str(code[char])
-    else:
-        coded_message += char
-    coded_message += ' '
-print(coded_message)
+print(encrypt(message))
