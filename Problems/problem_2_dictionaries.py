@@ -13,7 +13,7 @@ def encrypt(plaintext):
     ...  # Fill in implementation
     return ciphertext
 
-assert encrypt("hello!") == "8 5 12 12 15 !", f"Got {encrypt('hello')=}"
+assert encrypt("hello!") == "8 5 12 12 15 !", f"Got {encrypt('hello!')=}"
 
 # Get a message from the user
 message = input("What is your message? ")
