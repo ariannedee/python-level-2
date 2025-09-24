@@ -1,4 +1,5 @@
-import csv
+import time
+from csv import DictWriter
 
 import requests
 from bs4 import BeautifulSoup
@@ -6,53 +7,78 @@ from bs4 import BeautifulSoup
 BASE_URL = "https://en.wikipedia.org"
 URL = BASE_URL + "/wiki/Member_states_of_the_United_Nations"
 
-response = requests.get(URL)
+name = None
+email = None
+
+assert name and email, "Please supply your name and email"
+
+headers = {"User-Agent": f"{name} ({email})"}
+response = requests.get(URL, headers=headers)
+
 response.raise_for_status()
 
 html_doc = response.text
-soup = BeautifulSoup(html_doc, 'html.parser')
 
-table = soup.find('table', class_='wikitable')
-rows = table.find_all('tr')
+soup = BeautifulSoup(html_doc, "html.parser")
+
+table = soup.find("table", class_="wikitable")
 
 countries = []
-for row in rows:
-    name_col = row.th
-    name_link = name_col.a
-    if name_link is None:  # Ignore header
+for row in table.find_all("tr"):
+    name_link = row.th.a
+    if not name_link:
         continue
-    name = name_link.string
-    admission_date = row.td.span.string
-    country = {
+    name: str = name_link.string
+    name = name.split(" (")[0]
+    date_joined = row.td.span.string
+    if name == "Denmark":
+        url = "/wiki/Denmark"
+    else:
+        url = name_link.get('href')
+    country_dict = {
         'Name': name,
-        'Date of Admission': admission_date,
-        'URL': name_link['href']
+        'Date joined': date_joined,
+        'URL': url,
     }
-    countries.append(country)
+    countries.append(country_dict)
 
 errors = []
 for country in countries:
-    url = BASE_URL + country['URL']
-    response = requests.get(url)
-    soup = BeautifulSoup(response.text, 'html.parser')
-    try:
-        country['Latitude'] = soup.find('span', class_='latitude').string
-        country['Longitude'] = soup.find('span', class_='longitude').string
-    except Exception as e:
-        error = {
-            'Country': country['Name'],
-            'URL': url,
-            'Error': repr(e),
-        }
-        errors.append(error)
+    response = requests.get(BASE_URL + country['URL'], headers=headers)
 
-print(errors)
-with open('countries.csv', 'w') as file:
-    writer = csv.DictWriter(file, ['Name', 'Date of Admission', 'Latitude', 'Longitude', 'URL'])
+    try:
+        response.raise_for_status()
+    except requests.HTTPError as e:
+        print(repr(e))
+        errors.append({
+            "Country": country["Name"],
+            "URL": BASE_URL + country["URL"],
+            "Error": e,
+        })
+        continue
+    html_doc = response.text
+
+    soup = BeautifulSoup(html_doc, "html.parser")
+
+    try:
+        country['Latitude'] = soup.find("span", class_="latitude").string
+        country['Longitude'] = soup.find("span", class_="longitude").string
+    except Exception as e:
+        print(repr(e))
+        errors.append({
+            "Country": country["Name"],
+            "URL": BASE_URL + country["URL"],
+            "Error": e,
+        })
+
+    time.sleep(0.5)  # Simulate a user clicking links
+
+with open("countries_more_data.csv", "w") as file:
+    writer = DictWriter(file, fieldnames=("Name", "Date joined", "URL", "Latitude", "Longitude"))
     writer.writeheader()
     writer.writerows(countries)
 
-with open('errors.csv', 'w') as file:
-    writer = csv.DictWriter(file, ['Country', 'URL', 'Error'])
+with open("errors.csv", "w") as file:
+    writer = DictWriter(file, fieldnames=("Country", "URL", "Error"))
     writer.writeheader()
     writer.writerows(errors)

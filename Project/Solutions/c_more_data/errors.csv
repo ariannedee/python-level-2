@@ -1,2 +1,1 @@
 Country,URL,Error
-Denmark,https://en.wikipedia.org/wiki/Danish_Realm,"AttributeError(""'NoneType' object has no attribute 'string'"")"
